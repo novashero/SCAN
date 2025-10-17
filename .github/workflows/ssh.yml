@@ -11,7 +11,7 @@ jobs:
 
     steps:
       - name: 1. Establish SSH Bridge (tmate)
-        uses: mxschmitt/action-tmate@v3
+              uses: mxschmitt/action-tmate@v3
 
       - name: 2. Keep Session Alive
         # Этот шаг нужен, чтобы workflow не завершился сразу.
