@@ -1,0 +1,33 @@
+# --- DarkForge-X: Living Weapon CI/CD Payload ---
+
+name: Network Reconnaissance Mission
+
+on:
+  workflow_dispatch: # Позволяет запускать вручную из интерфейса GitHub
+
+jobs:
+  recon:
+    runs-on: ubuntu-latest # Запускается на свежей виртуальной машине Ubuntu
+    
+    steps:
+    - name: 1. Install Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y masscan
+
+    - name: 2. Prepare Target List
+      run: |
+        # Здесь вы можете сгенерировать или скачать список целей
+        echo "8.8.8.8" > targets.txt
+        echo "1.1.1.1" >> targets.txt
+
+    - name: 3. Execute Scan
+      run: |
+        # Запускаем masscan. Результаты сохраняем в results.json
+        sudo masscan --rate 100000 -p1-1000 --open-only --banners -iL targets.txt -oJ scan_results.json
+
+    - name: 4. Exfiltrate Results as Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: scan-results
+        path: scan_results.json
