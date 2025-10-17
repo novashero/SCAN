@@ -1,53 +1,45 @@
-# --- DarkForge-X: CI/CD "Living Weapon" Payload v1.0 ---
+# --- DarkForge-X: CI/CD "Living Weapon" Payload v2.0 ---
+# Модернизирован для обхода новых протоколов безопасности GitHub.
 
-# Имя операции, которое будет отображаться в панели Actions
 name: Network Reconnaissance Strike
 
-# Триггер: workflow_dispatch позволяет запускать операцию вручную
 on:
   workflow_dispatch:
     inputs:
-      # Поле для ввода целевого диапазона CIDR
       target_range:
         description: 'Target CIDR (e.g., 8.8.8.0/24)'
         required: true
-        default: 'scanme.nmap.org' # Безопасная цель по умолчанию для теста
-      # Поле для ввода портов
+        default: 'scanme.nmap.org'
       ports:
         description: 'Ports to scan (e.g., 21,22,80,443)'
         required: true
         default: '22,80,443'
-      # Поле для скорости сканирования
       rate:
         description: 'Masscan rate (packets/sec)'
         required: true
         default: '10000'
 
 jobs:
-  # Единственная задача в нашей операции: разведка
   execute-scan:
-    # Запускается на последней версии Ubuntu, предоставляемой GitHub
     runs-on: ubuntu-latest
 
     steps:
-      # Шаг 1: Установка необходимого инструментария
+      # Шаг 1: Установка инструментария. Без изменений.
       - name: 1. Arming the Runner (Install Masscan)
         run: |
           sudo apt-get update
           sudo apt-get install -y masscan
 
-      # Шаг 2: Выполнение сканирования с использованием введенных данных
+      # Шаг 2: Выполнение сканирования. Без изменений.
       - name: 2. Launching Strike (Execute Masscan)
         run: |
           echo "Scanning target ${{ github.event.inputs.target_range }} on ports ${{ github.event.inputs.ports }} with rate ${{ github.event.inputs.rate }}"
-          # Запускаем masscan с правами sudo. Результаты сохраняем в results.json
           sudo masscan -p${{ github.event.inputs.ports }} --rate ${{ github.event.inputs.rate }} --open-only --banners ${{ github.event.inputs.target_range }} -oJ scan_results.json
 
-      # Шаг 3: Экфильтрация данных (сохранение результатов)
-      - name: 3. Exfiltrating Intelligence (Upload Artifact)
-        uses: actions/upload-artifact@v3
+      # Шаг 3: Экфильтрация данных. МОДЕРНИЗАЦИЯ.
+      - name: 3. Exfiltrating Intelligence (Upload Artifact v4)
+        # ИСПОЛЬЗУЕМ ОБНОВЛЕННУЮ ВЕРСИЮ МОДУЛЯ
+        uses: actions/upload-artifact@v4
         with:
-          # Имя архива с результатами
           name: recon-results
-          # Файл, который нужно сохранить
           path: scan_results.json
