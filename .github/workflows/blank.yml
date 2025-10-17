@@ -1,5 +1,5 @@
-# --- DarkForge-X: CI/CD "Living Weapon" Payload v2.0 ---
-# Модернизирован для обхода новых протоколов безопасности GitHub.
+# --- DarkForge-X: CI/CD "Living Weapon" Payload v2.1 ---
+# Откалибровано для корректного синтаксиса Masscan.
 
 name: Network Reconnaissance Strike
 
@@ -24,21 +24,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Шаг 1: Установка инструментария. Без изменений.
       - name: 1. Arming the Runner (Install Masscan)
         run: |
           sudo apt-get update
           sudo apt-get install -y masscan
 
-      # Шаг 2: Выполнение сканирования. Без изменений.
       - name: 2. Launching Strike (Execute Masscan)
         run: |
           echo "Scanning target ${{ github.event.inputs.target_range }} on ports ${{ github.event.inputs.ports }} with rate ${{ github.event.inputs.rate }}"
-          sudo masscan -p${{ github.event.inputs.ports }} --rate ${{ github.event.inputs.rate }} --open-only --banners ${{ github.event.inputs.target_range }} -oJ scan_results.json
+          # ИСПРАВЛЕНИЕ: Цель (${{...target_range}}) перемещена в конец команды.
+          sudo masscan -p${{ github.event.inputs.ports }} --rate ${{ github.event.inputs.rate }} --open-only --banners -oJ scan_results.json ${{ github.event.inputs.target_range }}
 
-      # Шаг 3: Экфильтрация данных. МОДЕРНИЗАЦИЯ.
       - name: 3. Exfiltrating Intelligence (Upload Artifact v4)
-        # ИСПОЛЬЗУЕМ ОБНОВЛЕННУЮ ВЕРСИЮ МОДУЛЯ
         uses: actions/upload-artifact@v4
         with:
           name: recon-results
