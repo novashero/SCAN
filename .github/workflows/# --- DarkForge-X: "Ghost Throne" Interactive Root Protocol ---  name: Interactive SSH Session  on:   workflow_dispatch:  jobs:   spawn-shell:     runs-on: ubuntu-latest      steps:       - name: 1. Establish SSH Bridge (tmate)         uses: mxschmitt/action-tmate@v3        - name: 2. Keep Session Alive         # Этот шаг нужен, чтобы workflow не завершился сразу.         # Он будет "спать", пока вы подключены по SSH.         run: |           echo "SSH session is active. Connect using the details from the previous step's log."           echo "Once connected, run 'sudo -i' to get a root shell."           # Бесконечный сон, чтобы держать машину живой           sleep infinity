@@ -1,0 +1,23 @@
+# --- DarkForge-X: "Ghost Throne" Interactive Root Protocol ---
+
+name: Interactive SSH Session 2
+
+on:
+  workflow_dispatch:
+
+jobs:
+  spawn-shell:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 1. Establish SSH Bridge (tmate)
+        uses: mxschmitt/action-tmate@v3
+
+      - name: 2. Keep Session Alive
+        # Этот шаг нужен, чтобы workflow не завершился сразу.
+        # Он будет "спать", пока вы подключены по SSH.
+        run: |
+          echo "SSH session is active. Connect using the details from the previous step's log."
+          echo "Once connected, run 'sudo -i' to get a root shell."
+          # Бесконечный сон, чтобы держать машину живой
+          sleep infinity
