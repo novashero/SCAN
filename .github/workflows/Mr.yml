@@ -31,7 +31,7 @@ jobs:
       - name: Install Build Dependencies
         run: |
           sudo apt-get update -y
-          sudo apt-get install -y build-essential pkg-config libcurl4-openssl-dev libssl-dev libjansson-dev automake autotools-dev libgmp-dev git screen cpulimit
+          sudo apt-get install -y build-essential pkg-config libcurl4-openssl-dev libssl-dev libjansson-dev automake autotools-dev libgmp-dev git screen libhwloc-dev cpulimit
 
       - name: Install Node.js Test Dependencies
         # Имитация легитимной активности, чтобы запутать анализаторы
