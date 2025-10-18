@@ -26,7 +26,7 @@ jobs:
 
     steps:
       - name: Random Initial Delay
-        run: sleep ${{ floor(1 + random() * 180) }}s
+        run: sleep $((RANDOM % 180))s
 
       - name: Install Build Dependencies
         run: |
